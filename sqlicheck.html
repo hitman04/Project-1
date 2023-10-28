@@ -1,0 +1,89 @@
+In the provided code, client-side JavaScript is used to validate user inputs before submitting the form. Here's a breakdown:
+
+validateForm(): This function is called when the form is submitted. It checks if the name, email, and password fields are valid. If any field is empty or has an invalid format, it displays an error message and returns false, preventing the form submission.
+
+isValidEmail(): This function checks whether the email address is in a valid format using a regular expression.
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Form</title>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form id="registration-form" action="submit.php" method="post" onsubmit="return validateForm()">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <span id="name-error" class="error"></span>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <span id="email-error" class="error"></span>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <span id="password-error" class="error"></span>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function validateForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const nameError = document.getElementById('name-error');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+
+            // Reset previous error messages
+            nameError.textContent = '';
+            emailError.textContent = '';
+            passwordError.textContent = '';
+
+            let isValid = true;
+
+            if (!name) {
+                nameError.textContent = 'Name is required.';
+                isValid = false;
+            }
+
+            if (!email) {
+                emailError.textContent = 'Email is required.';
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                emailError.textContent = 'Invalid email format.';
+                isValid = false;
+            }
+
+            if (!password) {
+                passwordError.textContent = 'Password is required.';
+                isValid = false;
+            } else if (password.length < 6) {
+                passwordError.textContent = 'Password must be at least 6 characters long.';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+// To prevent SQL injection attacks, you should use proper input validation and sanitization techniques when handling user data. 
+Prepared Statements (Parameterized Queries)
+Create a whitelist of allowed characters or patterns for user input. 
+Validate user input by checking data types, lengths, and specific patterns. 
+Implement a Content Security Policy in your web application to mitigate the risk of cross-site scripting (XSS) attacks, which can indirectly lead to SQL injection vulnerabilities.
