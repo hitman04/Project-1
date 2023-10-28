@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ping Pong Game</title>
+    <style>
+      canvas {
+        background: black;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <h2>Ping Pong Game</h2>
+      <form id="start-form">
+        <label for="player-name">Enter Your Name:</label>
+        <input type="text" id="player-name" required>
+        <button type="submit">Start Game</button>
+      </form>
+      <canvas id="pingPong" width="800" height="400"></canvas>
+    </div>
+    <script>
+      // Get the canvas and its context
+      const canvas = document.getElementById("pingPong");
+      const context = canvas.getContext("2d");
+
+      // Get the game container and form
+      const gameContainer = document.getElementById("game-container");
+      const startForm = document.getElementById("start-form");
+
+      // Paddle
+      const paddleWidth = 10;
+      const paddleHeight = 100;
+      let paddleY = (canvas.height - paddleHeight) / 2;
+
+      // Ball
+      const ballSize = 10;
+      let ballX = canvas.width / 2;
+      let ballY = canvas.height / 2;
+      let ballSpeedX = 5;
+      let ballSpeedY = 5;
+
+      // Player name
+      let playerName = "";
+
+      // Handle form submission
+      startForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        playerName = document.getElementById("player-name").value;
+        gameContainer.removeChild(startForm);
+        startGame();
+      });
+
+      // Update the game
+      function update() {
+        // Move the ball
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        // Bounce off top and bottom
+        if (ballY - ballSize < 0 || ballY + ballSize > canvas.height) {
+          ballSpeedY = -ballSpeedY;
+        }
+
+        // Bounce off the paddle
+        if (
+          ballX - ballSize < paddleWidth &&
+          ballY > paddleY &&
+          ballY < paddleY + paddleHeight
+        ) {
+          ballSpeedX = -ballSpeedX;
+        }
+
+        // Ball out of bounds
+        if (ballX - ballSize < 0) {
+          // Reset the ball
+          ballX = canvas.width / 2;
+          ballY = canvas.height / 2;
+          ballSpeedX = 5;
+          ballSpeedY = 5;
+        }
+      }
+
+      // Draw the game
+      function draw() {
+        // Clear the canvas
+        context.fillStyle = "black";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the paddle
+        context.fillStyle = "white";
+        context.fillRect(0, paddleY, paddleWidth, paddleHeight);
+
+        // Draw the ball
+        context.beginPath();
+        context.arc(ballX, ballY, ballSize, 0, Math.PI * 2);
+        context.fill();
+
+        // Display player name
+        context.fillStyle = "white";
+        context.font = "20px Arial";
+        context.fillText("Player: " + playerName, 10, 20);
+      }
+
+      // Game loop
+      function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+      }
+
+      // Start the game
+      function startGame() {
+        gameContainer.appendChild(canvas);
+        gameLoop();
+      }
+    </script>
+  </body>
+</html>
